@@ -7,24 +7,44 @@ const GAME_DURATION = 60; // Game duration in seconds
 const SKIP_PENALTY = 5; // Time penalty for skipping in seconds
 
 const englishWords = [
-  "Cat", "Dog", "Bird", "Fish", "Elephant",
-  "Car", "Bike", "Train", "Plane", "Boat",
-  "Apple", "Banana", "Orange", "Grape", "Pear",
-  "Red", "Blue", "Green", "Yellow", "Purple",
-  "Sun", "Moon", "Star", "Cloud", "Rain"
+  { easy: "Cat", hard: "Feline" },
+  { easy: "Dog", hard: "Canine" },
+  { easy: "Bird", hard: "Avian" },
+  { easy: "Fish", hard: "Aquatic" },
+  { easy: "Elephant", hard: "Pachyderm" },
+  { easy: "Car", hard: "Automobile" },
+  { easy: "Bike", hard: "Velocipede" },
+  { easy: "Train", hard: "Locomotive" },
+  { easy: "Plane", hard: "Aircraft" },
+  { easy: "Boat", hard: "Vessel" },
+  { easy: "Apple", hard: "Pomaceous" },
+  { easy: "Banana", hard: "Cavendish" },
+  { easy: "Orange", hard: "Citrus" },
+  { easy: "Grape", hard: "Vitis" },
+  { easy: "Pear", hard: "Pyrus" },
 ];
 
 const spanishWords = [
-  "Gato", "Perro", "Pájaro", "Pez", "Elefante",
-  "Coche", "Bicicleta", "Tren", "Avión", "Barco",
-  "Manzana", "Plátano", "Naranja", "Uva", "Pera",
-  "Rojo", "Azul", "Verde", "Amarillo", "Morado",
-  "Sol", "Luna", "Estrella", "Nube", "Lluvia"
+  { easy: "Gato", hard: "Felino" },
+  { easy: "Perro", hard: "Canino" },
+  { easy: "Pájaro", hard: "Aviar" },
+  { easy: "Pez", hard: "Acuático" },
+  { easy: "Elefante", hard: "Paquidermo" },
+  { easy: "Coche", hard: "Automóvil" },
+  { easy: "Bicicleta", hard: "Velocípedo" },
+  { easy: "Tren", hard: "Locomotora" },
+  { easy: "Avión", hard: "Aeronave" },
+  { easy: "Barco", hard: "Embarcación" },
+  { easy: "Manzana", hard: "Pomácea" },
+  { easy: "Plátano", hard: "Cavendish" },
+  { easy: "Naranja", hard: "Cítrico" },
+  { easy: "Uva", hard: "Vitis" },
+  { easy: "Pera", hard: "Pyrus" },
 ];
 
 const SounddittoGame = () => {
   const [gameState, setGameState] = useState('waiting');
-  const [currentWord, setCurrentWord] = useState('');
+  const [currentWords, setCurrentWords] = useState({ easy: '', hard: '' });
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
   const [language, setLanguage] = useState('english');
@@ -53,18 +73,17 @@ const SounddittoGame = () => {
     setGameState('playing');
     setScore(0);
     setTimeLeft(GAME_DURATION);
-    setCurrentWord(words[Math.floor(Math.random() * words.length)]);
+    nextWord(words);
   };
 
-  const nextWord = () => {
-    if (availableWords.length <= 1) {
+  const nextWord = (words = availableWords) => {
+    if (words.length <= 1) {
       setGameState('finished');
       return;
     }
-    const newWords = availableWords.filter(word => word !== currentWord);
-    const randomIndex = Math.floor(Math.random() * newWords.length);
-    setCurrentWord(newWords[randomIndex]);
-    setAvailableWords(newWords);
+    const randomIndex = Math.floor(Math.random() * words.length);
+    setCurrentWords(words[randomIndex]);
+    setAvailableWords(words.filter((_, index) => index !== randomIndex));
   };
 
   const handleSkip = () => {
@@ -72,8 +91,8 @@ const SounddittoGame = () => {
     nextWord();
   };
 
-  const handleGotIt = () => {
-    setScore((prevScore) => prevScore + 1);
+  const handleGotIt = (difficulty) => {
+    setScore((prevScore) => prevScore + (difficulty === 'easy' ? 1 : 2));
     nextWord();
   };
 
@@ -111,20 +130,26 @@ const SounddittoGame = () => {
             <div className="space-y-6">
               <div className="text-center">
                 <p className="text-xl font-semibold text-gray-600">
-                  {language === 'english' ? 'Current Word:' : 'Palabra Actual:'}
+                  {language === 'english' ? 'Choose a word:' : 'Elige una palabra:'}
                 </p>
-                <p className="text-4xl font-bold mt-2 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent animate-bounce">
-                  {currentWord}
-                </p>
+                <div className="flex justify-between mt-4 space-x-4">
+                  <Button onClick={() => handleGotIt('easy')} className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-6 rounded-full shadow-lg hover:scale-105 transition-all duration-300">
+                    <span className="block">
+                      <span className="text-xs">{language === 'english' ? 'Easy (1pt)' : 'Fácil (1pt)'}</span>
+                      <span className="block text-lg font-bold">{currentWords.easy}</span>
+                    </span>
+                  </Button>
+                  <Button onClick={() => handleGotIt('hard')} className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-6 rounded-full shadow-lg hover:scale-105 transition-all duration-300">
+                    <span className="block">
+                      <span className="text-xs">{language === 'english' ? 'Hard (2pts)' : 'Difícil (2pts)'}</span>
+                      <span className="block text-lg font-bold">{currentWords.hard}</span>
+                    </span>
+                  </Button>
+                </div>
               </div>
-              <div className="flex justify-between space-x-4">
-                <Button onClick={handleSkip} className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-full shadow-lg hover:scale-105 transition-all duration-300">
-                  {language === 'english' ? 'Skip' : 'Saltar'}
-                </Button>
-                <Button onClick={handleGotIt} className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-full shadow-lg hover:scale-105 transition-all duration-300">
-                  {language === 'english' ? 'Got it!' : '¡Lo tengo!'}
-                </Button>
-              </div>
+              <Button onClick={handleSkip} className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-full shadow-lg hover:scale-105 transition-all duration-300">
+                {language === 'english' ? 'Skip' : 'Saltar'}
+              </Button>
               <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg">
                 <p className="text-lg font-semibold text-indigo-600">
                   {language === 'english' ? 'Score:' : 'Puntuación:'} 
