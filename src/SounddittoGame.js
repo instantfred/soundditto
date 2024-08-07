@@ -2,50 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
+import englishWords from './lib/englishWords';
+import spanishWords from './lib/spanishWords';
 
 const GAME_DURATION = 60; // Game duration in seconds
 const SKIP_PENALTY = 5; // Time penalty for skipping in seconds
-
-const englishWords = [
-  { easy: "Pidgeon", hard: "Dentist Drill" },
-  { easy: "Serpiente", hard: "Blender" },
-  { easy: "Mouse", hard: "Earthquake" },
-  { easy: "Heartbeat", hard: "Zombie" },
-  { easy: "Bell", hard: "Camera" },
-  { easy: "Hiccup", hard: "Panda" },
-  { easy: "Bee", hard: "Footsteps" },
-  { easy: "Train", hard: "Broom" },
-  { easy: "Dinosaur", hard: "Saxophone" },
-  { easy: "Kiss", hard: "Tornado" },
-  { easy: "Monster", hard: "Scissors" },
-  { easy: "Police Car", hard: "Popcorn" },
-  { easy: "Drinking", hard: "Boxing" },
-  { easy: "Guitar", hard: "Bus" },
-  { easy: "Doorbell", hard: "Cricket" },
-  { easy: "Whip", hard: "Seagull" },
-  { easy: "Fart", hard: "Bubbles" },
-];
-
-const spanishWords = [
-  { easy: "Paloma", hard: "Taladro de dentista" },
-  { easy: "Serpiente", hard: "Licuadora" },
-  { easy: "Ratón", hard: "Terremoto" },
-  { easy: "Latido del corazón", hard: "Zombi" },
-  { easy: "Campana", hard: "Cámara" },
-  { easy: "Hipo", hard: "Panda" },
-  { easy: "Abeja", hard: "Pasos" },
-  { easy: "Tren", hard: "Escoba" },
-  { easy: "Dinosaurio", hard: "Saxofón" },
-  { easy: "Beso", hard: "Tornado" },
-  { easy: "Monstruo", hard: "Tijeras" },
-  { easy: "Auto de policía", hard: "Palomitas de maíz" },
-  { easy: "Beber", hard: "Boxeo" },
-  { easy: "Guitarra", hard: "Autobús" },
-  { easy: "Timbre", hard: "Grillo" },
-  { easy: "Látigo", hard: "Gaviota" },
-  { easy: "Pedo", hard: "Burbujas" },
-];
-
 
 const SounddittoGame = () => {
   const [gameState, setGameState] = useState('waiting');
