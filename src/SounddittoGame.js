@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
+import { Info } from "lucide-react"
 import englishWords from './lib/englishWords';
 import spanishWords from './lib/spanishWords';
 import Footer from './components/ui/Footer';
+import InstructionsModal from './components/modals/InstructionsModal';
 
 const GAME_DURATION = 60; // Game duration in seconds
 const SKIP_PENALTY = 5; // Time penalty for skipping in seconds
@@ -16,6 +18,7 @@ const SounddittoGame = () => {
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
   const [language, setLanguage] = useState('english');
   const [availableWords, setAvailableWords] = useState([]);
+  const [isInstructionsOpen, setIsInstructionsOpen] = useState(false);
 
   useEffect(() => {
     let timer;
@@ -80,14 +83,28 @@ const SounddittoGame = () => {
     </div>
   );
 
+  const openInstructions = () => setIsInstructionsOpen(true);
+  const closeInstructions = () => setIsInstructionsOpen(false);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-400 to-indigo-600 flex flex-col items-center justify-center p-4">
       <div className="flex-grow flex items-center justify-center p-4 w-full">
         <Card className="w-full max-w-md mx-auto shadow-2xl hover:scale-105 transition-transform duration-300 bg-white rounded-3xl overflow-hidden">
-          <CardHeader className="text-3xl font-extrabold text-center bg-gradient-to-r from-pink-500 to-yellow-500 bg-clip-text text-transparent p-6">
-            Soundditto
-            {gameState === 'waiting' && renderLanguageToggle()}
-          </CardHeader>
+        <CardHeader className="p-6">
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-extrabold text-center bg-gradient-to-r from-pink-500 to-yellow-500 bg-clip-text text-transparent">
+              Soundditto
+            </h1>
+            <Button
+              size="icon"
+              onClick={openInstructions}
+              className="text-yellow-500 hover:text-yellow-600 transition-colors"
+            >
+              <Info className="h-6 w-6" />
+            </Button>
+          </div>
+          {gameState === 'waiting' && renderLanguageToggle()}
+        </CardHeader>
           <CardContent className="p-6">
             {gameState === 'waiting' && (
               <Button onClick={startGame} className="w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-bold py-3 rounded-full shadow-lg hover:scale-105 transition-all duration-300 animate-pulse">
@@ -148,6 +165,7 @@ const SounddittoGame = () => {
         </Card>
       </div>
       <Footer />
+      <InstructionsModal isOpen={isInstructionsOpen} onClose={closeInstructions} language={language} />
     </div>
   );
 };
