@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import englishWords from './lib/englishWords';
 import spanishWords from './lib/spanishWords';
+import Footer from './components/ui/Footer';
 
 const GAME_DURATION = 60; // Game duration in seconds
 const SKIP_PENALTY = 5; // Time penalty for skipping in seconds
@@ -80,69 +81,73 @@ const SounddittoGame = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-400 to-indigo-600 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md mx-auto shadow-2xl hover:scale-105 transition-transform duration-300 bg-white rounded-3xl overflow-hidden">
-        <CardHeader className="text-3xl font-extrabold text-center bg-gradient-to-r from-pink-500 to-yellow-500 bg-clip-text text-transparent p-6">
-          Soundditto
-          {gameState === 'waiting' && renderLanguageToggle()}
-        </CardHeader>
-        <CardContent className="p-6">
-          {gameState === 'waiting' && (
-            <Button onClick={startGame} className="w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-bold py-3 rounded-full shadow-lg hover:scale-105 transition-all duration-300 animate-pulse">
-              {language === 'english' ? 'Start Game' : 'Iniciar Juego'}
-            </Button>
-          )}
-          {gameState === 'playing' && (
-            <div className="space-y-6">
-              <div className="text-center">
-                <p className="text-xl font-semibold text-gray-600">
-                  {language === 'english' ? 'Choose a word:' : 'Elige una palabra:'}
-                </p>
-                <div className="flex justify-between mt-4 space-x-4">
-                  <Button onClick={() => handleGotIt('easy')} className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-6 rounded-full shadow-lg hover:scale-105 transition-all duration-300">
-                    <span className="block">
-                      <span className="text-xs">{language === 'english' ? 'Easy (1pt)' : 'Fácil (1pt)'}</span>
-                      <span className="block text-lg font-bold">{currentWords.easy}</span>
-                    </span>
-                  </Button>
-                  <Button onClick={() => handleGotIt('hard')} className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-6 rounded-full shadow-lg hover:scale-105 transition-all duration-300">
-                    <span className="block">
-                      <span className="text-xs">{language === 'english' ? 'Hard (2pts)' : 'Difícil (2pts)'}</span>
-                      <span className="block text-lg font-bold">{currentWords.hard}</span>
-                    </span>
-                  </Button>
+    <div className="min-h-screen bg-gradient-to-br from-purple-400 to-indigo-600 flex flex-col items-center justify-center p-4">
+      <div className="flex-grow flex items-center justify-center p-4 w-full">
+        <Card className="w-full max-w-md mx-auto shadow-2xl hover:scale-105 transition-transform duration-300 bg-white rounded-3xl overflow-hidden">
+          <CardHeader className="text-3xl font-extrabold text-center bg-gradient-to-r from-pink-500 to-yellow-500 bg-clip-text text-transparent p-6">
+            Soundditto
+            {gameState === 'waiting' && renderLanguageToggle()}
+          </CardHeader>
+          <CardContent className="p-6">
+            {gameState === 'waiting' && (
+              <Button onClick={startGame} className="w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-bold py-3 rounded-full shadow-lg hover:scale-105 transition-all duration-300 animate-pulse">
+                {language === 'english' ? 'Start Game' : 'Iniciar Juego'}
+              </Button>
+            )}
+            {gameState === 'playing' && (
+              <div className="space-y-6">
+                <div className="text-center">
+                  <p className="text-xl font-semibold text-gray-600">
+                    {language === 'english' ? 'Choose a word:' : 'Elige una palabra:'}
+                  </p>
+                  <div className="flex justify-between mt-4 space-x-4">
+                    <Button onClick={() => handleGotIt('easy')} className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-6 rounded-full shadow-lg hover:scale-105 transition-all duration-300">
+                      <span className="block">
+                        <span className="text-xs">{language === 'english' ? 'Easy (1pt)' : 'Fácil (1pt)'}</span>
+                        <span className="block text-lg font-bold">{currentWords.easy}</span>
+                      </span>
+                    </Button>
+                    <Button onClick={() => handleGotIt('hard')} className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-6 rounded-full shadow-lg hover:scale-105 transition-all duration-300">
+                      <span className="block">
+                        <span className="text-xs">{language === 'english' ? 'Hard (2pts)' : 'Difícil (2pts)'}</span>
+                        <span className="block text-lg font-bold">{currentWords.hard}</span>
+                      </span>
+                    </Button>
+                  </div>
+                </div>
+                <Button onClick={handleSkip} className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-full shadow-lg hover:scale-105 transition-all duration-300">
+                  {language === 'english' ? 'Skip' : 'Saltar'}
+                </Button>
+                <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg">
+                  <p className="text-lg font-semibold text-indigo-600">
+                    {language === 'english' ? 'Score:' : 'Puntuación:'} 
+                    <span className="ml-2 text-2xl">{score}</span>
+                  </p>
+                  <p className="text-lg font-semibold text-pink-600">
+                    {language === 'english' ? 'Time:' : 'Tiempo:'} 
+                    <span className="ml-2 text-2xl">{timeLeft}s</span>
+                  </p>
                 </div>
               </div>
-              <Button onClick={handleSkip} className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-full shadow-lg hover:scale-105 transition-all duration-300">
-                {language === 'english' ? 'Skip' : 'Saltar'}
-              </Button>
-              <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg">
-                <p className="text-lg font-semibold text-indigo-600">
-                  {language === 'english' ? 'Score:' : 'Puntuación:'} 
-                  <span className="ml-2 text-2xl">{score}</span>
+            )}
+            {gameState === 'finished' && (
+              <div className="text-center space-y-6">
+                <p className="text-2xl font-bold text-indigo-600">
+                  {language === 'english' ? 'Game Over!' : '¡Juego Terminado!'}
                 </p>
-                <p className="text-lg font-semibold text-pink-600">
-                  {language === 'english' ? 'Time:' : 'Tiempo:'} 
-                  <span className="ml-2 text-2xl">{timeLeft}s</span>
+                <p className="text-4xl font-extrabold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+                  {language === 'english' ? 'Final Score:' : 'Puntuación Final:'} {score}
                 </p>
+                <Button onClick={startGame} className="w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-bold py-3 rounded-full shadow-lg hover:scale-105 transition-all duration-300">
+                  {language === 'english' ? 'Play Again' : 'Jugar de Nuevo'}
+                </Button>
               </div>
-            </div>
-          )}
-          {gameState === 'finished' && (
-            <div className="text-center space-y-6">
-              <p className="text-2xl font-bold text-indigo-600">
-                {language === 'english' ? 'Game Over!' : '¡Juego Terminado!'}
-              </p>
-              <p className="text-4xl font-extrabold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-                {language === 'english' ? 'Final Score:' : 'Puntuación Final:'} {score}
-              </p>
-              <Button onClick={startGame} className="w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-bold py-3 rounded-full shadow-lg hover:scale-105 transition-all duration-300">
-                {language === 'english' ? 'Play Again' : 'Jugar de Nuevo'}
-              </Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+            )}
+          </CardContent>
+        
+        </Card>
+      </div>
+      <Footer />
     </div>
   );
 };
