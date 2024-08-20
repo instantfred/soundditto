@@ -9,7 +9,7 @@ import localization from './lib/localization';
 import Footer from './components/ui/Footer';
 import InstructionsModal from './components/modals/InstructionsModal';
 
-const GAME_DURATION = 60; // Game duration in seconds
+const GAME_DURATION = 90; // Game duration in seconds
 const SKIP_PENALTY = 5; // Time penalty for skipping in seconds
 
 const SounddittoGame = () => {
