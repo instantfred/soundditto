@@ -2,27 +2,29 @@ import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 
+const instructions = {
+  en: [
+    "Choose a word from either the 'Easy' or 'Hard' category.",
+    "Make the sound of the chosen word without using actual words.",
+    "Your team must guess the word based on your sound.",
+    "Score 1 point for easy words, 2 points for hard words.",
+    "Skip difficult words, but beware of the time penalty!",
+    "Race against the clock or play until you've gone through all words.",
+    "Have fun and get creative with your sounds!"
+  ],
+  es: [
+    "Elige una palabra de la categoría 'Fácil' o 'Difícil'.",
+    "Haz el sonido de la palabra elegida sin usar palabras reales.",
+    "Tu equipo debe adivinar la palabra basándose en tu sonido.",
+    "Gana 1 punto por palabras fáciles, 2 puntos por palabras difíciles.",
+    "Salta las palabras difíciles, ¡pero cuidado con la penalización de tiempo!",
+    "Compite contra el reloj o juega hasta que hayas pasado por todas las palabras.",
+    "¡Diviértete y sé creativo con tus sonidos!"
+  ]
+};
+
 const InstructionsModal = ({ isOpen, onClose, language }) => {
-  const instructions = {
-    english: [
-      "Choose between an easy (1 point) or hard (2 points) word.",
-      "Make the sound of the chosen word without using words or gestures.",
-      "Sitting on your hands is recommended to avoid gestures.",
-      "Your teammates guess the word.",
-      "Click on the word if they guess correctly, or 'Skip' to move to the next word.",
-      "Skipping penalizes you 5 seconds.",
-      "Score as many points as possible in 60 seconds!"
-    ],
-    spanish: [
-      "Elige entre una palabra fácil (1 punto) o difícil (2 puntos).",
-      "Haz el sonido de la palabra elegida, sin usar palabras o señas.",
-      "Se recomienda sentarse sobre las manos para evitar señas.",
-      "Tus compañeros de equipo adivinan la palabra.",
-      "Haz clic en la palabra si adivinan correctamente, o 'Saltar' para pasar a la siguiente palabra.",
-      "Saltar te penaliza con 5 segundos.",
-      "¡Consigue tantos puntos como sea posible en 60 segundos!"
-    ]
-  };
+  const currentInstructions = instructions[language] || instructions.en;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -34,7 +36,7 @@ const InstructionsModal = ({ isOpen, onClose, language }) => {
         </DialogHeader>
         <DialogDescription>
           <ul className="list-disc pl-5 space-y-2 text-gray-700">
-            {instructions[language].map((instruction, index) => (
+            {currentInstructions.map((instruction, index) => (
               <li key={index}>{instruction}</li>
             ))}
           </ul>
