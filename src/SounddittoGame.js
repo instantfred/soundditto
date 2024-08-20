@@ -19,10 +19,11 @@ const SounddittoGame = () => {
   const [language, setLanguage] = useState('english');
   const [availableWords, setAvailableWords] = useState([]);
   const [isInstructionsOpen, setIsInstructionsOpen] = useState(false);
+  const [isTimerEnabled, setIsTimerEnabled] = useState(true);
 
   useEffect(() => {
     let timer;
-    if (gameState === 'playing') {
+    if (gameState === 'playing' && isTimerEnabled) {
       timer = setInterval(() => {
         setTimeLeft((prevTime) => {
           if (prevTime <= 1) {
@@ -35,14 +36,16 @@ const SounddittoGame = () => {
       }, 1000);
     }
     return () => clearInterval(timer);
-  }, [gameState]);
+  }, [gameState, isTimerEnabled]);
 
   const startGame = () => {
     const words = language === 'english' ? [...englishWords] : [...spanishWords];
     setAvailableWords(words);
     setGameState('playing');
     setScore(0);
-    setTimeLeft(GAME_DURATION);
+    if (isTimerEnabled) {
+      setTimeLeft(GAME_DURATION);
+    }
     nextWord(words);
   };
 
@@ -57,7 +60,9 @@ const SounddittoGame = () => {
   };
 
   const handleSkip = () => {
-    setTimeLeft((prevTime) => Math.max(prevTime - SKIP_PENALTY, 0));
+    if (isTimerEnabled) {
+      setTimeLeft((prevTime) => Math.max(prevTime - SKIP_PENALTY, 0));
+    }
     nextWord();
   };
 
@@ -68,6 +73,10 @@ const SounddittoGame = () => {
 
   const toggleLanguage = () => {
     setLanguage(prevLang => prevLang === 'english' ? 'spanish' : 'english');
+  };
+
+  const toggleTimer = () => {
+    setIsTimerEnabled(prevState => !prevState);
   };
 
   const renderLanguageToggle = () => (
@@ -83,6 +92,20 @@ const SounddittoGame = () => {
     </div>
   );
 
+  const renderTimerToggle = () => (
+    <div className="flex items-center justify-center mt-4 space-x-2">
+      <span className="font-semibold text-gray-600">
+        {language === 'english' ? 'Timer' : 'Temporizador'}
+      </span>
+      <Switch
+        checked={isTimerEnabled}
+        onCheckedChange={toggleTimer}
+        disabled={gameState !== 'waiting'}
+        className="bg-white border-2 border-gray-300 data-[state=checked]:bg-white data-[state=unchecked]:bg-white"
+      />
+    </div>
+  );
+
   const openInstructions = () => setIsInstructionsOpen(true);
   const closeInstructions = () => setIsInstructionsOpen(false);
 
@@ -90,21 +113,26 @@ const SounddittoGame = () => {
     <div className="min-h-screen bg-gradient-to-br from-purple-400 to-indigo-600 flex flex-col items-center justify-center p-4">
       <div className="flex-grow flex items-center justify-center p-4 w-full">
         <Card className="w-full max-w-md mx-auto shadow-2xl hover:scale-105 transition-transform duration-300 bg-white rounded-3xl overflow-hidden">
-        <CardHeader className="p-6">
-          <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-extrabold text-center bg-gradient-to-r from-pink-500 to-yellow-500 bg-clip-text text-transparent">
-              Soundditto
-            </h1>
-            <Button
-              size="icon"
-              onClick={openInstructions}
-              className="text-yellow-500 hover:text-yellow-600 transition-colors"
-            >
-              <Info className="h-6 w-6" />
-            </Button>
-          </div>
-          {gameState === 'waiting' && renderLanguageToggle()}
-        </CardHeader>
+          <CardHeader className="p-6">
+            <div className="flex items-center justify-between">
+              <h1 className="text-3xl font-extrabold text-center bg-gradient-to-r from-pink-500 to-yellow-500 bg-clip-text text-transparent">
+                Soundditto
+              </h1>
+              <Button
+                size="icon"
+                onClick={openInstructions}
+                className="text-yellow-500 hover:text-yellow-600 transition-colors"
+              >
+                <Info className="h-6 w-6" />
+              </Button>
+            </div>
+            {gameState === 'waiting' && (
+              <>
+                {renderLanguageToggle()}
+                {renderTimerToggle()}
+              </>
+            )}
+          </CardHeader>
           <CardContent className="p-6">
             {gameState === 'waiting' && (
               <Button onClick={startGame} className="w-full bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-bold py-3 rounded-full shadow-lg hover:scale-105 transition-all duration-300 animate-pulse">
@@ -137,13 +165,15 @@ const SounddittoGame = () => {
                 </Button>
                 <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg">
                   <p className="text-lg font-semibold text-indigo-600">
-                    {language === 'english' ? 'Score:' : 'Puntuación:'} 
+                    {language === 'english' ? 'Score:' : 'Puntos:'} 
                     <span className="ml-2 text-2xl">{score}</span>
                   </p>
-                  <p className="text-lg font-semibold text-pink-600">
-                    {language === 'english' ? 'Time:' : 'Tiempo:'} 
-                    <span className="ml-2 text-2xl">{timeLeft}s</span>
-                  </p>
+                  {isTimerEnabled && (
+                    <p className="text-lg font-semibold text-pink-600">
+                      {language === 'english' ? 'Time:' : 'Tiempo:'} 
+                      <span className="ml-2 text-2xl">{timeLeft}s</span>
+                    </p>
+                  )}
                 </div>
               </div>
             )}
@@ -161,7 +191,6 @@ const SounddittoGame = () => {
               </div>
             )}
           </CardContent>
-        
         </Card>
       </div>
       <Footer />
